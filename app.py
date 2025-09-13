@@ -10,6 +10,8 @@ app = Flask(__name__)
 def index():
     return "Jälkiruokareseptit" 
 
+if __name__ == "__main__":
+    app.run(debug=True) 
 
 @app.route("/register")
 def register():
