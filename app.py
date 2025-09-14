@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request
 from werkzeug.security import generate_password_hash
+import config
 import db 
 
 app = Flask(__name__)
