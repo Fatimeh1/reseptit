@@ -12,6 +12,9 @@ app.secret_key = config.secret_key
 def index():
     return render_template("index.html") 
 
+@app.route("/new_recipe")
+def new_recipe():
+    return render_template("new_recipe.html") 
 
 @app.route("/register")
 def register():
