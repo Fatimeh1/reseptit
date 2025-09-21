@@ -24,6 +24,13 @@
     <a href="/new_recipe"> Uusi resepti</a>
   </p>
 
+  <h2>Reseptit</h2>
+  
+  <ul>
+    {% for recipe in recipes %}
+    <li>{{recipe.title}}</li>
+    {% endfor %}
+  </ul>
 </body>
 
 </html>
