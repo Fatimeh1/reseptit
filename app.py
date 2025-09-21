@@ -17,7 +17,7 @@ def index():
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
-    return render_template("show_recipe.html", recipe=recipe
+    return render_template("show_recipe.html", recipe=recipe)
 
 @app.route("/new_recipe")
 def new_recipe():
