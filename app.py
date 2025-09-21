@@ -19,11 +19,11 @@ def new_recipe():
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
     title = request.form["title"]
-    recipe = request.form["recipe"]
+    ingredients = request.form["ingredients"]
     user_id = session["user_id"]
-    sql = """INSERT INTO recipes (title, recipe, user_id) 
+    sql = """INSERT INTO recipes (title, ingredients, user_id) 
              VALUES (?, ?, ?)"""
-    db.execute(sql, [title, recipe, user_id])
+    db.execute(sql, [title, ingrediens, user_id])
 
     return redirect("/") 
 
@@ -58,12 +58,12 @@ def login():
         password = request.form["password"]
     
         sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result =db.query(sql, [username])[0]
+        result = db.query(sql, [username])[0]
         user_id = result ["id"]
-        password_hash = result [password_hash]
+        password_hash = result ["password_hash"]
 
         if check_password_hash(password_hash, password):
-            session [user_id] = user_id
+            session ["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
