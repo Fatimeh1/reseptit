@@ -10,4 +10,3 @@ CREATE TABLE recipes (
     ingredients TEXT,
     user_id INTEGER REFERENCES users
 );
-
