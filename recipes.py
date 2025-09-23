@@ -6,14 +6,14 @@ def add_recipe(title, ingredients, user_id):
     db.execute(sql, [title, ingredients, user_id])
 
 def get_recipes():
-    sql = "SELECT id, title, FROM recipes ORDER BY id DESC"
+    sql = "SELECT id, title FROM recipes ORDER BY id DESC"
     return db.query(sql)
 
-def get_recipes(recipe_id):
-    sql = """SELECT resipes.title,
+def get_recipe(recipe_id):
+    sql = """SELECT recipes.title,
                     recipes.ingredients, 
                     users.username
             FROM recipes, users
             WHERE recipes.user_id = users.id AND 
                     recipes.id = ?"""
-    return db.query (sql, recipe_id)[0]
+    return db.query(sql, [recipe_id])[0]
