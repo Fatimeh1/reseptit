@@ -10,8 +10,10 @@ def get_recipes():
     return db.query(sql)
 
 def get_recipe(recipe_id):
-    sql = """SELECT recipes.title,
+    sql = """SELECT recipes.id,
+                    recipes.title,
                     recipes.ingredients, 
+                    users.id user_id,
                     users.username
             FROM recipes, users
             WHERE recipes.user_id = users.id AND 
