@@ -13,14 +13,14 @@
     <a href="/remove_recipe/{{ recipe.id }}">Poista</a>
   </p>
   {% endif %}
-  <p>
-    {{ recipe.ingredients}}
-  </p>
+
+  <p style="white-space: pre-line">{{ recipe.ingredients }}</p>
+
   <p>
     Tekijä: {{ recipe.username}}
   </p>
   <p>
-    <a href ="/">Takaisin</a>
+    <a href="/">Takaisin</a>
   </p>
   
 </body>
