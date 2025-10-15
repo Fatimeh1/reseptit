@@ -18,7 +18,8 @@ def get_recipe(recipe_id):
             FROM recipes, users
             WHERE recipes.user_id = users.id AND 
                     recipes.id = ?"""
-    return db.query(sql, [recipe_id])[0]
+    result = db.query(sql, [recipe_id])
+    return result[0] if result else None
 
 def update_recipe(recipe_id, title, ingredients):
     sql = """UPDATE recipes SET title = ?,
@@ -27,7 +28,7 @@ def update_recipe(recipe_id, title, ingredients):
     db.execute(sql , [title, ingredients, recipe_id])
 
 def remove_recipe(recipe_id):
-    sql = "DELETE FROM WHERE id = ?"
+    sql = "DELETE FROM recipes WHERE id = ?"
     db.execute(sql , [recipe_id])
 
 def find_recipes(query):
