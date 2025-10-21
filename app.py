@@ -1,10 +1,10 @@
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
-from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db 
 import recipes
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -18,6 +18,14 @@ def require_login():
 def index():
     all_recipes = recipes.get_recipes()
     return render_template("index.html", recipes=all_recipes)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    recipes = users.get_recipes(user_id)
+    return render_template("show_user.html", user=user, recipes=recipes)
 
 @app.route("/find_recipe")
 def find_recipe():
@@ -34,7 +42,8 @@ def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:
         abort(404)
-    return render_template("show_recipe.html", recipe=recipe)
+    classes = recipes.get_classes(recipe_id)
+    return render_template("show_recipe.html", recipe=recipe, classes=classes)
 
 @app.route("/new_recipe")
 def new_recipe():
@@ -47,10 +56,22 @@ def create_recipe():
     require_login()
 
     title = request.form["title"]
+    if not title or len(title) > 50:
+        abort(403)
     ingredients = request.form["ingredients"]
+    if not ingredients or len(ingredients) > 1000:
+        abort(403)
     user_id = session["user_id"]
 
-    recipes.add_recipe(title, ingredients, user_id)
+    classes = []
+    flavor = request.form["flavor"]
+    if flavor:
+        classes.append("Maku", flavor)
+    difficulty = request.form["difficulty"]
+    if difficulty:
+        classes.append("Vaikeustaso", difficulty) 
+
+    recipes.add_recipe(title, ingredients, user_id, classes)
 
     return redirect("/") 
 
@@ -75,7 +96,11 @@ def update_recipe():
         abort(403)
     
     title = request.form["title"]
+    if not title or len(title) > 50:
+        abort(403)
     ingredients = request.form["ingredients"]
+    if not ingredients or len(title) > 50:
+        abort(403)
 
     recipes.update_recipe(recipe_id, title, ingredients)
 
@@ -112,15 +137,14 @@ def create():
     password2 = request.form["password2"]
     if password1 != password2:
         return "VIRHE: salasanat eivät ole samat"
-    password_hash = generate_password_hash(password1)
-
+    
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.create_user(username, password1)
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
-
+    
     return "Tunnus luotu"
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -131,12 +155,8 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
     
-        sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result = db.query(sql, [username])[0]
-        user_id = result ["id"]
-        password_hash = result ["password_hash"]
-
-        if check_password_hash(password_hash, password):
+        user_id = users.check_login(username, password)
+        if user_id:
             session ["user_id"] = user_id
             session["username"] = username
             return redirect("/")
