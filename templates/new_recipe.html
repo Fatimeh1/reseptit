@@ -10,11 +10,34 @@
   <form action="/create_recipe" method="post">
     <p>
       Otsikko: <br />
-      <input type="text" name="title"/> 
+      <input type="text" name="title" maxlength="50" required/> 
     </p>
     <p>
       Resepti: <br />
-      <textarea name="ingredients" rows="8" cols="60"></textarea>
+      <textarea name="ingredients" rows="8" cols="60" maxlength="1000" required></textarea>
+    </p>
+    <p>
+      Maku: <br />
+      <select name="flavor">
+        <option value="">(valitse)</option>
+        <option value="makea">Makea</option>
+        <option value="suolainen">Suolainen</option>
+        <option value="kirpeä">kirpeä</option>
+        <option value="raikas">raikas</option>
+        <option value="suklainen">suklainen</option>
+        <option value="vaniljalainen">vaniljalainen</option>
+        <option value="karamellinen">karamellinen</option>
+        <option value="hedelmäinen">hedelmäinen</option>
+        <option value="pähkinäinen">pähkinäinen</option>
+      </select>
+    </p>
+    <p>
+      vaikeustaso: <br />
+      <select name="difficulty">
+        <option value="">(valitse)</option>
+        <option value="helppo">Helppo</option>
+        <option value="keskitaso">Keskitaso</option>
+        <option value="vaikea">Vaikea</option>
     </p>
     <input type="submit" value="Luo resepti" />
   </form>
