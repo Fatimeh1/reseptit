@@ -16,29 +16,17 @@
       Resepti: <br />
       <textarea name="ingredients" rows="8" cols="60" maxlength="1000" required></textarea>
     </p>
+    {% for class in classes %}
     <p>
-      Maku: <br />
-      <select name="flavor">
+      {{ class }}: <br />
+      <select name="classes">
         <option value="">(valitse)</option>
-        <option value="makea">Makea</option>
-        <option value="suolainen">Suolainen</option>
-        <option value="kirpeä">kirpeä</option>
-        <option value="raikas">raikas</option>
-        <option value="suklainen">suklainen</option>
-        <option value="vaniljalainen">vaniljalainen</option>
-        <option value="karamellinen">karamellinen</option>
-        <option value="hedelmäinen">hedelmäinen</option>
-        <option value="pähkinäinen">pähkinäinen</option>
+      {% for option in classes[class] %}
+        <option value="{{ class }}:{{ option }}">{{ option }}</option>
+      {% endfor %}
       </select>
     </p>
-    <p>
-      vaikeustaso: <br />
-      <select name="difficulty">
-        <option value="">(valitse)</option>
-        <option value="helppo">Helppo</option>
-        <option value="keskitaso">Keskitaso</option>
-        <option value="vaikea">Vaikea</option>
-    </p>
+    {% endfor %}
     <input type="submit" value="Luo resepti" />
   </form>
 </body>

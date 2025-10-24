@@ -48,7 +48,8 @@ def show_recipe(recipe_id):
 @app.route("/new_recipe")
 def new_recipe():
     require_login()
-    return render_template("new_recipe.html") 
+    classes = recipes.get_all_classes()
+    return render_template("new_recipe.html", classes=classes) 
 
 
 @app.route("/create_recipe", methods=["POST"])
@@ -64,15 +65,13 @@ def create_recipe():
     user_id = session["user_id"]
 
     classes = []
-    flavor = request.form["flavor"]
-    if flavor:
-        classes.append("Maku", flavor)
-    difficulty = request.form["difficulty"]
-    if difficulty:
-        classes.append("Vaikeustaso", difficulty) 
-
+    for entry in request.form.getlist("classes"):
+        if entry:
+            parts = entry.split(":") 
+            classes.append((parts[0], parts[1]))
+    
     recipes.add_recipe(title, ingredients, user_id, classes)
-
+    
     return redirect("/") 
 
 @app.route("/edit_recipe/<int:recipe_id>")
