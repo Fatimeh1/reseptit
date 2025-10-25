@@ -64,11 +64,17 @@ def create_recipe():
         abort(403)
     user_id = session["user_id"]
 
+    all_classes = recipes.get_all_classes()
+
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
-            parts = entry.split(":") 
-            classes.append((parts[0], parts[1]))
+            class_title, class_value = entry.split(":")
+            if class_title[0] not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_title]:
+                abort(403)
+            classes.append((class_title, class_value))
     
     recipes.add_recipe(title, ingredients, user_id, classes)
     
@@ -82,7 +88,15 @@ def edit_recipe(recipe_id):
         abort(404)
     if recipe["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_recipe.html", recipe=recipe) 
+
+    all_classes = recipes.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = ""
+    for entry in recipes.get_classes(recipe_id):
+        classes[entry["title"]] = entry["value"]
+
+    return render_template("edit_recipe.html", recipe=recipe, classes=classes, all_classes=all_classes) 
 
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
@@ -98,10 +112,22 @@ def update_recipe():
     if not title or len(title) > 50:
         abort(403)
     ingredients = request.form["ingredients"]
-    if not ingredients or len(title) > 50:
+    if not ingredients or len(ingredients) > 1000:
         abort(403)
 
-    recipes.update_recipe(recipe_id, title, ingredients)
+    all_classes = recipes.get_all_classes()
+
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            class_title, class_value = entry.split(":")
+            if class_title not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_title]:
+                abort(403)
+            classes.append((class_title, class_value))
+
+    recipes.update_recipe(recipe_id, title, ingredients, classes)
 
     return redirect("/recipe/" + str(recipe_id)) 
 
