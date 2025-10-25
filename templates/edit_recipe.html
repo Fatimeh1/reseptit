@@ -17,6 +17,46 @@
       <textarea name="ingredients" rows="8" cols="60" maxlength="1000" required>{{ recipe.ingredients}}</textarea>
     </p>
     <input type="hidden" name="recipe_id" value ="{{ recipe.id }}" />
+    
+    {% for class in all_classes %}
+    <p>
+      {{ class }}: <br />
+      <select name="classes">
+        <option value="">(valitse)</option>
+      {% for option in all_classes[class] %}
+        {% if classes[class] == option %}
+        <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+        {% else %}
+        <option value="{{ class }}:{{ option }}">{{ option }}</option>
+        {% endif %}
+      {% endfor %}
+      </select>
+    </p>
+    {% endfor %}
+    <p>
+      Maku: <br />
+      <select name="flavor">
+        <option value="">(valitse)</option>
+        <option value="makea">makea</option>
+        <option value="suolainen">suolainen</option>
+        <option value="kirpeä">kirpeä</option>
+        <option value="raikas">raikas</option>
+        <option value="suklainen">suklainen</option>
+        <option value="vaniljalainen">vaniljalainen</option>
+        <option value="karamellinen">karamellinen</option>
+        <option value="hedelmäinen">hedelmäinen</option>
+        <option value="pähkinäinen">pähkinäinen</option>
+      </select>
+    </p>
+    <p>
+      Vaikeustaso: <br />
+      <select name="difficulty">
+        <option value="">(valitse)</option>
+        <option value="helppo">Helppo</option>
+        <option value="keskitaso">Keskitaso</option>
+        <option value="vaikea">Vaikea</option>
+      </select>
+    </p>
     <input type="submit" value="Päivitä reseptin" />
   </form>
 </body>
