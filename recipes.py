@@ -22,7 +22,35 @@ def add_recipe(title, ingredients, user_id, classes):
     sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [recipe_id, title, value]) 
-           
+
+def add_comment(recipe_id, user_id, comment):
+    sql = """INSERT INTO comments (recipe_id, user_id, comment) 
+             VALUES (?, ?, ?)"""
+    db.execute(sql, [recipe_id, user_id, comment])
+
+def get_comments(recipe_id):
+    sql = """SELECT comments.comment,
+                    users.id user_id,
+                    users.username
+            FROM comments, users
+            WHERE comments.user_id = users.id AND 
+                    comments.recipe_id = ?
+            ORDER BY comments.id DESC"""
+    return db.query(sql, [recipe_id])
+
+def get_images(recipe_id):
+    sql = "SELECT id FROM images WHERE recipe_id = ?"
+    return db.query(sql, [recipe_id])
+
+def add_image(recipe_id, image):
+    sql = "INSERT INTO images (recipe_id, image) VALUES (?, ?)"
+    db.execute(sql, [recipe_id, image]) 
+
+def get_image(image_id):
+    sql = "SELECT image FROM images WHERE id = ?"
+    result = db.query(sql, [image_id])
+    return result[0][0] if result else None
+
 def get_classes(recipe_id):
     sql = "SELECT title, value FROM recipe_classes WHERE recipe_id = ?"
     return db.query(sql, [recipe_id])
