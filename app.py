@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, make_response, redirect, render_template, request, session
 import config
 import db 
 import recipes
@@ -43,14 +43,25 @@ def show_recipe(recipe_id):
     if not recipe:
         abort(404)
     classes = recipes.get_classes(recipe_id)
-    return render_template("show_recipe.html", recipe=recipe, classes=classes)
+    comments = recipes.get_comments(recipe_id)
+    images = recipes.get_images(recipe_id)
+    return render_template("show_recipe.html", recipe=recipe, classes=classes, comments=comments, images=images)
+
+@app.route("/image/<int:image_id>")
+def show_image(image_id):
+    image = recipes.get_image(image_id)
+    if not image:
+        abort(404)
+
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image/png")
+    return response
 
 @app.route("/new_recipe")
 def new_recipe():
     require_login()
     classes = recipes.get_all_classes()
     return render_template("new_recipe.html", classes=classes) 
-
 
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
@@ -70,7 +81,7 @@ def create_recipe():
     for entry in request.form.getlist("classes"):
         if entry:
             class_title, class_value = entry.split(":")
-            if class_title[0] not in all_classes:
+            if class_title not in all_classes:
                 abort(403)
             if class_value not in all_classes[class_title]:
                 abort(403)
@@ -79,6 +90,23 @@ def create_recipe():
     recipes.add_recipe(title, ingredients, user_id, classes)
     
     return redirect("/") 
+
+@app.route("/add_comment", methods=["POST"])
+def add_comment():
+    require_login()
+
+    comment = request.form["comment"]
+    if not comment or len(comment) > 500:
+        abort(403)
+    recipe_id = request.form["recipe_id"]
+    user_id = session["user_id"]
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(404)
+    
+    recipes.add_comment(recipe_id, user_id, comment)
+    
+    return redirect("/recipe/" + str(recipe_id))
 
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):
@@ -97,6 +125,41 @@ def edit_recipe(recipe_id):
         classes[entry["title"]] = entry["value"]
 
     return render_template("edit_recipe.html", recipe=recipe, classes=classes, all_classes=all_classes) 
+
+@app.route("/images/<int:recipe_id>")
+def edit_images(recipe_id):
+    require_login()
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(404)
+    if recipe["user_id"] != session["user_id"]:
+        abort(403)
+
+    images = recipes.get_images(recipe_id)
+
+    return render_template("images.html", recipe=recipe, images=images)
+
+@app.route("/add_image", methods=["POST"])
+def add_image():
+    require_login()
+
+    recipe_id = request.form["recipe_id"] 
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(404)
+    if recipe["user_id"] != session["user_id"]:
+        abort(403)
+
+    file = request.files["image"]
+    if not file.filename.endswith(".png"):
+        return "VIRHE: väärä tiedostomuoto"
+
+    image = file.read()
+    if len(image) > 100 * 1024:
+        return "VIRHE: liian suuri kuva"
+
+    recipes.add_image(recipe_id, image)
+    return redirect("/images/" + str(recipe_id))
 
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
