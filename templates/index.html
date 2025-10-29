@@ -1,41 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Jälkiruokareseptit</title>
-</head>
+{% block title %}Jälkiruokareseptit{% endblock %}
 
-<body>
-  <h1>Jälkiruokareseptit</h1>  
+{% block content %}
+<h2>Reseptit</h2>
 
-  {% if session.username %}
-  <p>
-    Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id}}
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  <p>
-    <a href="/new_recipe">Uusi resepti</a>
-  </p>
-  {% else %}
-  <p>
-    <a href="/login">Kirjaudu sisään</a>
-    <a href="/register">Luo tunnus</a>
-  </p>
-  {% endif %}
-
-  <p>
-    <a href="/find_recipe">Etsi resepti</a>
-  </p>
-
-  <h2>Reseptit</h2>
-
-  <ul>
-    {% for recipe in recipes %}
-    <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
-    {% endfor %}
-  </ul>
-</body>
-
-</html>
+<ul>
+  {% for recipe in recipes %}
+  <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
