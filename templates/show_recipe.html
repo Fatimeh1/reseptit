@@ -15,7 +15,7 @@
 <img src="/image/{{ image.id }}" alt="Reseptin kuva" />
 {% endfor %}
 <p>
-{{ recipe.ingredients | show_lines }}
+  {{ recipe.ingredients | show_lines }}
 </p>
 <ul>
   <li>Tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a></li>
@@ -35,9 +35,9 @@
   {% endfor %}
 </ul>
 {% if session.user_id %} 
-<h4>Uusi kommentti</h4>
+<h3>Uusi kommentti</h3>
 <form action ="/add_comment" method="post">
-  Kommentti:<br>
+  Kommentti: <br>
     <textarea name="comment" rows="4" cols="50" maxlength="500" required></textarea>
     <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
@@ -47,5 +47,4 @@
 <p>
   <a href="/">Takaisin</a>
 </p>
-  
 {% endblock %}
