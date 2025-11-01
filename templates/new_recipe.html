@@ -7,15 +7,15 @@
 <form action="/create_recipe" method="post">
   <p>
     <label for="title">Otsikko:</label> <br />
-    <input type="text" name="title" id="title" maxlength="50" required/> 
+    <input type="text" name="title" id="title" maxlength="50" required /> 
   </p>
   <p>
-    <label for="ingredients">Resepti:</label> <br />
+    <label for="ingredients">Resepti</label>: <br />
     <textarea name="ingredients" id="ingredients" rows="8" cols="60" maxlength="1000" required></textarea>
   </p>
   {% for class in classes %}
   <p>
-    <label for="class{{ class }}">{{ class }}:</label> <br />
+    <label for="class{{ class }}">{{ class }}</label>: <br />
     <select name="classes" id="class{{ class }}">
       <option value="">(valitse)</option>
     {% for option in classes[class] %}
