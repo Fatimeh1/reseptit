@@ -39,6 +39,7 @@
   Kommentti:<br>
     <textarea name="comment" rows="4" cols="50" maxlength="500" required></textarea>
     <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Lisää kommentti">
 </form>
 {% endif %}

@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 from flask import Flask
 from flask import abort, flash, make_response, redirect, render_template, request, session
@@ -13,6 +14,11 @@ def require_login():
     if "user_id" not in session:
         abort(403) 
 
+def check_csrf():
+    if "csrf_token" not in request.form:
+        abort(403)
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
 
 @app.route("/")
 def index():
@@ -66,6 +72,7 @@ def new_recipe():
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
     require_login()
+    check_csrf()
 
     title = request.form["title"]
     if not title or len(title) > 50:
@@ -95,6 +102,7 @@ def create_recipe():
 @app.route("/add_comment", methods=["POST"])
 def add_comment():
     require_login()
+    check_csrf()
 
     comment = request.form["comment"]
     if not comment or len(comment) > 500:
@@ -143,6 +151,7 @@ def edit_images(recipe_id):
 @app.route("/add_image", methods=["POST"])
 def add_image():
     require_login()
+    check_csrf()
 
     recipe_id = request.form["recipe_id"] 
     recipe = recipes.get_recipe(recipe_id)
@@ -167,6 +176,7 @@ def add_image():
 @app.route("/remove_images", methods=["POST"])
 def remove_images():
     require_login()
+    check_csrf()
 
     recipe_id = request.form["recipe_id"] 
     recipe = recipes.get_recipe(recipe_id)
@@ -183,6 +193,8 @@ def remove_images():
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
     require_login()
+    check_csrf()
+
     recipe_id = request.form["recipe_id"]
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:
@@ -227,6 +239,7 @@ def remove_recipe(recipe_id):
         return render_template("remove_recipe.html", recipe=recipe)
     
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             recipes.remove_recipe(recipe_id)
             return redirect("/")
@@ -267,6 +280,7 @@ def login():
         if user_id:
             session ["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             flash("VIRHE: väärä tunnus tai salasana")
