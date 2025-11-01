@@ -60,7 +60,12 @@ def get_classes(recipe_id):
     return db.query(sql, [recipe_id])
 
 def get_recipes():
-    sql = "SELECT id, title FROM recipes ORDER BY id DESC"
+    sql = """SELECT recipes.id, recipes.title, users.id user_id, users.username, 
+                    COUNT(comments.id) comment_count
+             FROM recipes JOIN users ON recipes.user_id = users.id 
+                          LEFT JOIN comments ON recipes.id = comments.recipe_id 
+             GROUP BY recipes.id
+             ORDER BY recipes.id DESC"""
     return db.query(sql)
 
 def get_recipe(recipe_id):
@@ -89,6 +94,10 @@ def update_recipe(recipe_id, title, ingredients, classes):
         db.execute(sql, [recipe_id, title, value])
 
 def remove_recipe(recipe_id):
+    sql = "DELETE FROM comments WHERE recipe_id = ?"
+    db.execute(sql , [recipe_id])
+    sql = "DELETE FROM images WHERE recipe_id = ?"
+    db.execute(sql , [recipe_id])
     sql = "DELETE FROM recipe_classes WHERE recipe_id = ?"
     db.execute(sql , [recipe_id])
     sql = "DELETE FROM recipes WHERE id = ?"

@@ -1,0 +1,20 @@
+body {
+  margin: auto;
+  max-width: 50em;
+  font-family: sans-serif;
+  background-color: rgb(245, 236, 245);
+}
+
+.recipe {
+    border: 2px solid black;
+    margin: 1em;
+    padding: 0.2em 0.5em;
+}
+
+.info {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.5em;
+  background-color: rgb(255, 0, 183);
+  color: white;
+}
