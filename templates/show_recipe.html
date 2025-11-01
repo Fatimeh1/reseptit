@@ -16,24 +16,22 @@
 {% endfor %}
 
 <p style= "white-space: pre-line" >{{ recipe.ingredients }}</p>
-
-<p>
-  Tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
-</p>
+<ul>
+  <li>Tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a></li>
 {% if classes %}
-<p>
-  Luokat:
-  <ul>
-    {% for class in classes %}
-    <li>{{ class.title }}: {{ class.value }}</li>
-    {% endfor %}
-  </ul>
-</p>
+  {% for class in classes %}
+  <li>{{ class.title }}: {{ class.value }}</li>
+  {% endfor %}
 {% endif %}
+</ul>
+{% if session.user_id %}
 <h3>Kommentit</h3>
 <ul>
   {% for comment in comments %}
-  <li> {{ comment.comment }}, <a href="/user/{{ comment.user_id }}">{{ comment.username }}</a></li>
+  <li> 
+    <p style="white-space: pre-line">{{ comment.comment }}</p>
+    <a href="/user/{{ comment.user_id }}">{{ comment.username }}</a>
+  </li>
   {% endfor %}
 </ul>
 <h3>Uusi kommentti</h3>
@@ -43,6 +41,7 @@
     <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
     <input type="submit" value="Lisää kommentti">
 </form>
+{% endif %}
 <p>
   <a href="/">Takaisin</a>
 </p>
