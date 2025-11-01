@@ -12,10 +12,11 @@
 </p>
 {% endif %}
 {% for image in images %}
-<img src="/image/{{ image.id }}" />
+<img src="/image/{{ image.id }}" alt="Reseptin kuva" />
 {% endfor %}
-
-<p style= "white-space: pre-line" >{{ recipe.ingredients }}</p>
+<p>
+{{ recipe.ingredients | show_lines }}
+</p>
 <ul>
   <li>Tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a></li>
 {% if classes %}
@@ -24,7 +25,6 @@
   {% endfor %}
 {% endif %}
 </ul>
-{% if session.user_id %}
 <h3>Kommentit</h3>
 <ul>
   {% for comment in comments %}
@@ -34,7 +34,8 @@
   </li>
   {% endfor %}
 </ul>
-<h3>Uusi kommentti</h3>
+{% if session.user_id %} 
+<h4>Uusi kommentti</h4>
 <form action ="/add_comment" method="post">
   Kommentti:<br>
     <textarea name="comment" rows="4" cols="50" maxlength="500" required></textarea>
