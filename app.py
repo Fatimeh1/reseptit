@@ -37,8 +37,8 @@ def show_user(user_id):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    recipes = users.get_recipes(user_id)
-    return render_template("show_user.html", user=user, recipes=recipes)
+    user_recipes = users.get_recipes(user_id)
+    return render_template("show_user.html", user=user, recipes=user_recipes)
 
 @app.route("/find_recipe")
 def find_recipe():
@@ -58,7 +58,8 @@ def show_recipe(recipe_id):
     classes = recipes.get_classes(recipe_id)
     comments = recipes.get_comments(recipe_id)
     images = recipes.get_images(recipe_id)
-    return render_template("show_recipe.html", recipe=recipe, classes=classes, comments=comments, images=images)
+    return render_template("show_recipe.html", recipe=recipe, classes=classes, 
+                           comments=comments, images=images)
 
 @app.route("/image/<int:image_id>")
 def show_image(image_id):
