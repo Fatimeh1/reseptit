@@ -15,7 +15,6 @@
     <textarea name="ingredients" id="ingredients" rows="8" cols="60" maxlength="1000" required>{{ recipe.ingredients}}</textarea>
   </p>
   <input type="hidden" name="recipe_id" value ="{{ recipe.id }}" />
-  
   {% for class in all_classes %}
   <p>
     <label for="class{{ class }}">{{ class }}</a>: <br />
