@@ -20,8 +20,8 @@ def add_recipe(title, ingredients, user_id, classes):
     recipe_id = db.last_insert_id() 
 
     sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
-    for class_title, class_value in classes:
-        db.execute(sql, [recipe_id, class_title, class_value]) 
+    for title, value in classes:
+        db.execute(sql, [recipe_id, title, value]) 
 
 def add_comment(recipe_id, user_id, comment):
     sql = """INSERT INTO comments (recipe_id, user_id, comment) 
@@ -90,8 +90,8 @@ def update_recipe(recipe_id, title, ingredients, classes):
     db.execute(sql , [recipe_id])
 
     sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
-    for class_title, class_value in classes:
-        db.execute(sql, [recipe_id, class_title, class_value])
+    for title, value in classes:
+        db.execute(sql, [recipe_id, title, value])
 
 def remove_recipe(recipe_id):
     sql = "DELETE FROM comments WHERE recipe_id = ?"
