@@ -84,10 +84,10 @@ def update_recipe(recipe_id, title, ingredients, classes):
     sql = """UPDATE recipes SET title = ?,
                                 ingredients = ?
                             WHERE id = ?"""
-    db.execute(sql , [title, ingredients, recipe_id])
+    db.execute(sql, [title, ingredients, recipe_id])
 
     sql = "DELETE FROM recipe_classes WHERE recipe_id = ?"
-    db.execute(sql , [recipe_id])
+    db.execute(sql, [recipe_id])
 
     sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
     for class_title, class_value in classes:
@@ -95,19 +95,19 @@ def update_recipe(recipe_id, title, ingredients, classes):
 
 def remove_recipe(recipe_id):
     sql = "DELETE FROM comments WHERE recipe_id = ?"
-    db.execute(sql , [recipe_id])
+    db.execute(sql, [recipe_id])
     sql = "DELETE FROM images WHERE recipe_id = ?"
-    db.execute(sql , [recipe_id])
+    db.execute(sql, [recipe_id])
     sql = "DELETE FROM recipe_classes WHERE recipe_id = ?"
-    db.execute(sql , [recipe_id])
+    db.execute(sql, [recipe_id])
     sql = "DELETE FROM recipes WHERE id = ?"
-    db.execute(sql , [recipe_id])
+    db.execute(sql, [recipe_id])
 
 def find_recipes(query):
     sql = """SELECT id, title 
              FROM recipes
              WHERE title LIKE ? OR ingredients LIKE ?
              ORDER BY id DESC"""
-    like = "%" + query +"%"
+    like = "%" + query + "%"
     return db.query(sql, [like, like])
                                 
