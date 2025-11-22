@@ -1,7 +1,7 @@
 import secrets
 import sqlite3
 from flask import Flask
-from flask import abort, flash, make_response, redirect, render_template, request, session
+from flask import abort, flash, make_response, redirect, render_template, request, session, url_for
 import markupsafe
 import config
 import db 
@@ -101,10 +101,9 @@ def create_recipe():
                 abort(403)
             classes.append((class_title, class_value))
     
-    recipes.add_recipe(title, ingredients, user_id, classes)
+    recipe_id = recipes.add_recipe(title, ingredients, user_id, classes)
 
-    recipe_id = db.last_insert_id()
-    return redirect("/recipe/" + str(recipe_id))  
+    return redirect(url_for("show_recipe", recipe_id=recipe_id))  
 
 @app.route("/add_comment", methods=["POST"])
 def add_comment():

@@ -23,6 +23,8 @@ def add_recipe(title, ingredients, user_id, classes):
     for class_title, class_value in classes:
         db.execute(sql, [recipe_id, class_title, class_value]) 
 
+    return recipe_id
+
 def add_comment(recipe_id, user_id, comment):
     sql = """INSERT INTO comments (recipe_id, user_id, comment) 
              VALUES (?, ?, ?)"""
